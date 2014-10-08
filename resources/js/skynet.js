@@ -4,6 +4,6 @@ function createDevice(){
 
 function addField(divName){
     var newDiv = document.createElement('div');
-    newDiv.innerHTML = "<br><input type='text' name='keyInputs[]'>-<input type='text' name='valueInputs[]'>"
+    newDiv.innerHTML = "Key/Value Pair: <input type='text' name='keyInputs[]'>-<input type='text' name='valueInputs[]'>"
     document.getElementById(divName).appendChild(newDiv);
 }
