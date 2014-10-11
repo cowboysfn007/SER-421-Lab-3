@@ -1,13 +1,16 @@
+var __owner = "robruss";
+var __token = 421;
+
 function createDevice(){
   console.log("It Worked");
   
-  var owner = document.getElementById("owner").value;
-  var token = 421;
+  //var owner = document.getElementById("owner").value;
+  //var token = 421;
   var keys = document.getElementsByName("keyInputs[]");
   var values = document.getElementsByName("valueInputs[]");
   
   //if ((owner.length > 0) && (token.length > 0)) {
-    var payload = "owner=" + owner + "&token=" + token;
+    var payload = "owner=" + owner + "&token=" + __token;
 
     for (var i=0; i < keys.length; i++) {
       if ((keys[i].value.length > 0) && (values[i].value.length > 0)) {
@@ -22,19 +25,18 @@ function createDevice(){
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(payload);
     
-    
     document.getElementById("tabs-1").innerHTML = "";
     document.getElementById("tabs-1").appendChild(pseudoDeviceForm(owner));
     
  // }else console.log("invalid input");
 }
 
-function newForm(owner) {
+function newForm() {
   document.getElementById("tabs-1").innerHTML = "";
-  document.getElementById("tabs-1").appendChild(pseudoDeviceForm(owner));
+  document.getElementById("tabs-1").appendChild(pseudoDeviceForm());
 }
 
-function pseudoDeviceForm(owner) {
+function pseudoDeviceForm() {
   var form = document.createElement("form");
   
   var p = document.createElement("p");
@@ -48,7 +50,7 @@ function pseudoDeviceForm(owner) {
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("id", "owner");
-  input.setAttribute("value", owner);
+  input.setAttribute("value", __owner);
   input.setAttribute("disabled", "true");
   form.appendChild(input);
   
