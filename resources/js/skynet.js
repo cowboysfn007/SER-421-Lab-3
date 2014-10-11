@@ -242,5 +242,11 @@ function queryDevice(){
 }
 
 function handleQueryRequest(request){
-    if (request.readyState == 4) console.log(request.responseText);  
+    if (request.readyState == 4) {
+      //console.log(request.responseText);
+      
+      var results = JSON.parse(request.responseText);
+      
+      console.log(results[0]);
+    }
 }
