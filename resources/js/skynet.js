@@ -1,6 +1,11 @@
 var __owner = "robruss";
 var __token = 421;
 
+function loadForms(){
+    newForm();
+    newQuery();
+}
+
 function createDevice(){
   console.log("It Worked");
   
@@ -126,4 +131,40 @@ function getRequestObject() {
 
 function handleRequest(request) {
   if (request.readyState == 4) console.log(request.responseText);
+}
+
+function newQuery(){
+    document.getElementById("tabs-2").innerHTML = "";
+    document.getElementById("tabs-2").appendChild(queryForm());
+}
+
+function queryForm(){
+    var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Query by UUID"
+  form.appendChild(p);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "UUID: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "uuid");
+  form.appendChild(input);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "submit");
+  input.setAttribute("value", "Query");
+  form.appendChild(input);
+  
+  form.setAttribute("action", "javascript:queryDevice()");
+  form.setAttribute("method", "get");
+                           
+  return form;
+}
+
+function queryDevice(){
+    console.log("Query");   
 }
