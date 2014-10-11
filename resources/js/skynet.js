@@ -2,11 +2,11 @@ function createDevice(){
   console.log("It Worked");
   
   var owner = document.getElementById("owner").value;
-  var token = document.getElementById("token").value;
+  var token = 421;
   var keys = document.getElementsByName("keyInputs[]");
   var values = document.getElementsByName("valueInputs[]");
   
-  if ((owner.length > 0) && (token.length > 0)) {
+  //if ((owner.length > 0) && (token.length > 0)) {
     var payload = "owner=" + owner + "&token=" + token;
 
     for (var i=0; i < keys.length; i++) {
@@ -14,14 +14,81 @@ function createDevice(){
         payload = payload + "&"+ keys[i].value + "=" + values[i].value;
       }
     }
-  
+    
+    
     var request = getRequestObject();
     request.onreadystatechange = function() {handleRequest(request)};
     request.open("POST", "http://skynet.im/devices", true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(payload);
     
-  }else console.log("invalid input");
+    
+    document.getElementById("tabs-1").innerHTML = "";
+    document.getElementById("tabs-1").appendChild(pseudoDeviceForm(owner));
+    
+ // }else console.log("invalid input");
+}
+
+function newForm(owner) {
+  document.getElementById("tabs-1").innerHTML = "";
+  document.getElementById("tabs-1").appendChild(pseudoDeviceForm(owner));
+}
+
+function pseudoDeviceForm(owner) {
+  var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Create Pseudo Devices"
+  form.appendChild(p);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "Owner: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "owner");
+  input.setAttribute("value", owner);
+  input.setAttribute("disabled", "true");
+  form.appendChild(input);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "<br>Key/Value Pair: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("name", "keyInputs[]");
+  form.appendChild(input);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "=";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("name", "valueInputs[]");
+  form.appendChild(input);
+  
+  var div = document.createElement("div");
+  div.setAttribute("id", "dynamicField");
+  form.appendChild(div);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "button");
+  input.setAttribute("value", "Add Additional Pair");
+  input.setAttribute("onClick", "addField('dynamicField')");
+  form.appendChild(input);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "submit");
+  input.setAttribute("value", "Submit");
+  form.appendChild(input);
+  
+  form.setAttribute("action", "javascript:createDevice()");
+  form.setAttribute("method", "post");
+                           
+  return form;
 }
 
 function addField(divName){
