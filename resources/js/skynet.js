@@ -6,6 +6,7 @@ function loadForms(){
     newForm();
     newQuery();
     newSearch();
+    newDelete();
 }
 
 function createDevice(){
@@ -17,7 +18,7 @@ function createDevice(){
   var values = document.getElementsByName("valueInputs[]");
   
   //if ((owner.length > 0) && (token.length > 0)) {
-    var payload = "owner=" + owner + "&token=" + __token;
+    var payload = "owner=" + __owner + "&token=" + __token;
 
     for (var i=0; i < keys.length; i++) {
       if ((keys[i].value.length > 0) && (values[i].value.length > 0)) {
@@ -33,7 +34,7 @@ function createDevice(){
     request.send(payload);
     
     document.getElementById("tabs-1").innerHTML = "";
-    document.getElementById("tabs-1").appendChild(pseudoDeviceForm(owner));
+    document.getElementById("tabs-1").appendChild(pseudoDeviceForm());
     
  // }else console.log("invalid input");
 }
@@ -244,3 +245,56 @@ function queryDevice(){
 function handleQueryRequest(request){
     if (request.readyState == 4) console.log(request.responseText);  
 }
+
+//Delete Functionality
+function newDelete(){
+    document.getElementById("tabs-4").innerHTML = "";
+    document.getElementById("tabs-4").appendChild(deleteForm());
+}
+
+function deleteForm(){
+  var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Delete by UUID"
+  form.appendChild(p);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "UUID: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "deleteUuid");
+  form.appendChild(input);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "submit");
+  input.setAttribute("value", "Delete");
+  form.appendChild(input);
+  
+  form.setAttribute("action", "javascript:deleteDevice()");
+  form.setAttribute("method", "post");
+                           
+  return form;
+}
+
+function deleteDevice(){
+    console.log("Delete");
+    var uuid = document.getElementById("deleteUuid").value;
+    var request = getRequestObject();
+    request.onreadystatechange = function() {handleDeleteRequest(request)};
+    request.open("DELETE", "http://skynet.im/devices/" + uuid, true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.setRequestHeader("skynet_auth_uuid", __owner);
+    request.setRequestHeader("skynet_auth_token", __token);
+    request.send(null);
+    
+    document.getElementById("tabs-4").innerHTML = "";
+    document.getElementById("tabs-4").appendChild(deleteForm());
+}
+
+function handleDeleteRequest(request){
+    if (request.readyState == 4) console.log(request.responseText);  
+}
+
