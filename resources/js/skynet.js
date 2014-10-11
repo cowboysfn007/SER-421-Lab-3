@@ -221,11 +221,26 @@ function queryForm(){
   form.appendChild(input);
   
   form.setAttribute("action", "javascript:queryDevice()");
-  form.setAttribute("method", "get");
+  form.setAttribute("method", "post");
                            
   return form;
 }
 
 function queryDevice(){
-    console.log("Query");   
+    console.log("Query");
+    var uuid = document.getElementById("uuid").value;
+    var request = getRequestObject();
+    request.onreadystatechange = function() {handleQueryRequest(request)};
+    request.open("GET", "http://skynet.im/devices/" + uuid, true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.setRequestHeader("skynet_auth_uuid", __owner);
+    request.setRequestHeader("skynet_auth_token", __token);
+    request.send(null);
+    
+    document.getElementById("tabs-2").innerHTML = "";
+    document.getElementById("tabs-2").appendChild(queryForm());
+}
+
+function handleQueryRequest(request){
+    if (request.readyState == 4) console.log(request.responseText);  
 }
