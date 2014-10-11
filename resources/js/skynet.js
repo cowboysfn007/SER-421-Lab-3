@@ -192,7 +192,26 @@ function getRequestObject() {
 }
 
 function handleRequest(request) {
-  if (request.readyState == 4) console.log(request.responseText);
+  if (request.readyState == 4) {
+    var results = JSON.parse(request.responseText);
+    var num = results.devices.length;
+    
+    for (var i=0; i<num; i++) {
+      var device = results.devices[i];
+      
+      parseDevice(device);
+      
+    }
+  }
+}
+
+function parseDevice(device) {
+  for (var key in device) {
+    if (device.hasOwnProperty(key)) {
+      if (typeof device[key] === 'object') parseDevice(device[key]);
+      else console.log(key + " " + device[key]);
+    }
+  }
 }
 
 function newQuery(){
@@ -244,11 +263,7 @@ function queryDevice(){
 
 function handleQueryRequest(request){
     if (request.readyState == 4) {
-      //console.log(request.responseText);
-      
-      var results = JSON.parse(request.responseText);
-      
-      console.log(results[0]);
+      console.log(request.responseText);
     }
 }
 
@@ -303,3 +318,4 @@ function deleteDevice(){
 function handleDeleteRequest(request){
     if (request.readyState == 4) console.log(request.responseText);  
 }
+
