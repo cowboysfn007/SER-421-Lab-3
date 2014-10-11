@@ -93,7 +93,27 @@ function pseudoDeviceForm() {
   return form;
 }
 
-function addField(divName){
+function searchDeviceForm() {
+  var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Search for Devices";
+  form.appendChild(p);
+  
+  
+  
+}
+
+function searchForDevice() {
+  
+  var request = getRequestObject();
+  request.onreadystatechange = function() {handleRequest(request)};
+  request.open("GET", "http://skynet.im/devices", true);
+  //request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  //request.send(payload);
+}
+
+function addField(divName) {
     var newDiv = document.createElement('div');
     newDiv.innerHTML = "Key/Value Pair: <input type='text' name='keyInputs[]'>=<input type='text' name='valueInputs[]'>"
     document.getElementById(divName).appendChild(newDiv);
