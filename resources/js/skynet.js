@@ -7,6 +7,7 @@ function loadForms(){
     newQuery();
     newSearch();
     newDelete();
+    newUpdate();
 }
 
 function createDevice(){
@@ -278,14 +279,6 @@ function queryDevice(){
     document.getElementById("tabs-2").appendChild(queryForm());
 }
 
-/*
-function handleQueryRequest(request){
-    if (request.readyState == 4) {
-      console.log(request.responseText);
-    }
-}
-*/
-
 //Delete Functionality
 function newDelete(){
     document.getElementById("tabs-4").innerHTML = "";
@@ -334,9 +327,56 @@ function deleteDevice(){
     document.getElementById("tabs-4").appendChild(deleteForm());
 }
 
-/*
-function handleDeleteRequest(request){
-    if (request.readyState == 4) console.log(request.responseText);  
+function newUpdate(){
+    document.getElementById("tabs-5").innerHTML = "";
+    document.getElementById("tabs-5").appendChild(updateForm()); 
 }
-*/
+
+function updateForm(){
+ var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Update Geo Location"
+  form.appendChild(p);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "UUID: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "updateUuid");
+  form.appendChild(input);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "submit");
+  input.setAttribute("value", "Update");
+  form.appendChild(input);
+  
+  form.setAttribute("action", "javascript:updateDevice()");
+  form.setAttribute("method", "post");
+                           
+  return form; 
+}
+
+function updateDevice(){
+    console.log("Update");
+    var uuid = document.getElementById("updateUuid").value;
+    var request = getRequestObject();
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude; 
+      var long = position.coords.longitude;
+  
+      var payload = "lat=" + lat + "&long=" + long;
+      request.onreadystatechange = function() {handleRequest(request)};
+      request.open("PUT", "http://skynet.im/devices/" + uuid, true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.setRequestHeader("skynet_auth_uuid", __owner);
+      request.setRequestHeader("skynet_auth_token", __token);
+      request.send(payload);
+    });
+   
+    document.getElementById("tabs-4").innerHTML = "";
+    document.getElementById("tabs-4").appendChild(deleteForm()); 
+}
 
