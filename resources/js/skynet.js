@@ -193,25 +193,42 @@ function getRequestObject() {
 
 function handleRequest(request) {
   if (request.readyState == 4) {
+    var text = "";
     var results = JSON.parse(request.responseText);
-    var num = results.devices.length;
     
-    for (var i=0; i<num; i++) {
-      var device = results.devices[i];
+    if (!results.hasOwnProperty("devices")) {
+      text += parseDevice(results);
+    }else if (results.hasOwnProperty("devices")) {
+      var num = results.devices.length;
+    
+      for (var i=0; i<num; i++) {
+        var device = results.devices[i];
+        var name = "Device - " + device.uuid;
       
-      parseDevice(device);
+        var element = parseDevice(device);
+        console.log(name);
+        console.log(element);
+        
+        text += "<br>" + name + "<br>";
+        text += element;
+      //document.getElementById("results").appendChild = element;
       
+      }
     }
+    
+    document.getElementById("results").innerHTML = text;
   }
 }
 
 function parseDevice(device) {
+  var text = "";
   for (var key in device) {
     if (device.hasOwnProperty(key)) {
-      if (typeof device[key] === 'object') parseDevice(device[key]);
-      else console.log(key + " " + device[key]);
+      if (typeof device[key] === 'object') text += key + ":<br>" + parseDevice(device[key]);
+      else text += (key + ":" + device[key] + "<br>");
     }
   }
+  return text;
 }
 
 function newQuery(){
@@ -250,7 +267,7 @@ function queryDevice(){
     console.log("Query");
     var uuid = document.getElementById("uuid").value;
     var request = getRequestObject();
-    request.onreadystatechange = function() {handleQueryRequest(request)};
+    request.onreadystatechange = function() {handleRequest(request)};
     request.open("GET", "http://skynet.im/devices/" + uuid, true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -261,11 +278,13 @@ function queryDevice(){
     document.getElementById("tabs-2").appendChild(queryForm());
 }
 
+/*
 function handleQueryRequest(request){
     if (request.readyState == 4) {
       console.log(request.responseText);
     }
 }
+*/
 
 //Delete Functionality
 function newDelete(){
@@ -304,7 +323,7 @@ function deleteDevice(){
     console.log("Delete");
     var uuid = document.getElementById("deleteUuid").value;
     var request = getRequestObject();
-    request.onreadystatechange = function() {handleDeleteRequest(request)};
+    request.onreadystatechange = function() {handleRequest(request)};
     request.open("DELETE", "http://skynet.im/devices/" + uuid, true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -315,7 +334,9 @@ function deleteDevice(){
     document.getElementById("tabs-4").appendChild(deleteForm());
 }
 
+/*
 function handleDeleteRequest(request){
     if (request.readyState == 4) console.log(request.responseText);  
 }
+*/
 
