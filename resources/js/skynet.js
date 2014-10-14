@@ -2,7 +2,7 @@ var __owner = "robruss";
 var __token = 421;
 var __baseURL = "http://skynet.im/devices";
 var __cookieName = "skynet-ser-421";
-var __googleMapsAPIKey = "AIzaSyDrbEmJEpkZQ-wNj61wut0JPPaNUR3avuY";
+var __map;
 
 function loadForms() {
   newCreate();
@@ -419,9 +419,18 @@ function handleRequest(request, method) {
     if(method === "create"){
         addToCookie(results.uuid);
     }
-    if(method === "delete"){
+    else if(method === "delete"){
         deleteFromCookie(results.uuid);
     }
+    else if(method === "update"){
+         var myLatLong = new google.maps.LatLng(results.lat,results.long);
+         var marker = new google.maps.Marker({
+            position: myLatLong,
+             map: __map,
+             title: results.uuid
+         });
+    }
+      
     document.getElementById("results").innerHTML = text;
   }
 }
@@ -494,7 +503,7 @@ function deleteEntry(uuid){
 function initialize(){
     var mapOptions = {
         zoom: 10,
-        center: new google.maps.LatLng(33.605,-112.125)
+        center: new google.maps.LatLng(33.2952149,-111.7639625)
     };
-    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    __map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 }
