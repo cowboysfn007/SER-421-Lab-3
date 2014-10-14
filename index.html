@@ -4,14 +4,19 @@
     <title>Skynet Project</title>
     <meta charset="=utf-8">
     <link rel="stylesheet" href="resources/css/jquery-ui.css">
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
     <script src="resources/js/jquery.js"></script>
     <script src="resources/js/jquery-ui.js"></script>
     <script src="resources/js/skynet.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrbEmJEpkZQ-wNj61wut0JPPaNUR3avuY"></script>
     <script>
       $(function() {
         $( "#tabs" ).tabs();
       });
     </script>
+    <script type="text/javascript">google.maps.event.addDomListener(window, 'load', initialize);</script>
   </head>
   <body onload="loadForms()">
     <div id="tabs">
@@ -29,8 +34,9 @@
       <div id="tabs-5"></div>
       <div id="resultsField">
         Previous Results from Skynet:
-        <div id="results">None</div>
+        <div id="results"></div>
       </div>
     </div>
+    <div id="map-canvas">hi</div>
   </body>
 </html>
