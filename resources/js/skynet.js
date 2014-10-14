@@ -153,6 +153,7 @@ function queryForm() {
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("id", "uuid");
+  //input.setAttribute("selectBoxOptions", "Test;Test2");
   form.appendChild(input);
   
   var input = document.createElement("input");
@@ -160,9 +161,19 @@ function queryForm() {
   input.setAttribute("value", "Query");
   form.appendChild(input);
   
+  var label = document.createElement("label");
+  label.innerHTML = "<br>Select UUID: ";
+  form.appendChild(label);
+  
+  var select = document.createElement("select");
+  fillCookieUUID(select);
+  select.setAttribute("id", "selectUUID");
+  select.setAttribute("onChange", "javascript:copyToUUID()");
+  form.appendChild(select);
+  
   form.setAttribute("action", "javascript:queryDevice()");
   form.setAttribute("method", "post");
-                           
+  
   return form;
 }
 
@@ -321,6 +332,29 @@ function parseDevice(device) {
     }
   }
   return text;
+}
+
+function copyToUUID() {
+  var select = document.getElementById("selectUUID");
+  var value = select.options[select.selectedIndex].value;
+  document.getElementById("uuid").value = value;
+}
+
+function fillCookieUUID(select) {
+  var sample = ["sample1", "sample2", "sample3"];
+  
+  var option = document.createElement("option");
+  option.disabled = true;
+  option.selected = true;
+  option.textContent = "Select One";
+  select.appendChild(option);
+  
+  for (var i=0; i < sample.length; i++) {
+    option = document.createElement("option");
+    option.textContent = sample[i];
+    option.value = sample[i];
+    select.appendChild(option);
+  }
 }
 
 function addField(divName) {
