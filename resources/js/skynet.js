@@ -234,7 +234,7 @@ function createDevice() {
   }
 
   var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request)};
+  request.onreadystatechange = function() {handleRequest(request, "create")};
   request.open("POST", __baseURL, true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.send(payload);
@@ -256,7 +256,7 @@ function searchDevice() {
   }
   
   var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request)};
+  request.onreadystatechange = function() {handleRequest(request, "search")};
   request.open("GET", __baseURL + payload, true);
   request.setRequestHeader("skynet_auth_uuid", __owner);
   request.setRequestHeader("skynet_auth_token", __token);
@@ -269,7 +269,7 @@ function queryDevice(){
   console.log("Query");
   var uuid = document.getElementById("uuid").value;
   var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request)};
+  request.onreadystatechange = function() {handleRequest(request, "query")};
   request.open("GET", __baseURL + "/" + uuid, true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -283,7 +283,7 @@ function deleteDevice() {
   console.log("Delete");
   var uuid = document.getElementById("deleteUuid").value;
   var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request)};
+  request.onreadystatechange = function() {handleRequest(request, "delete")};
   request.open("DELETE", __baseURL + "/" + uuid, true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -301,7 +301,7 @@ function updateDevice(){
     var lat = position.coords.latitude; 
     var long = position.coords.longitude;
     var payload = "lat=" + lat + "&long=" + long;
-    request.onreadystatechange = function() {handleRequest(request)};
+    request.onreadystatechange = function() {handleRequest(request, "update")};
     request.open("PUT", __baseURL + "/" + uuid, true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -334,14 +334,14 @@ function getRequestObject() {
   else return null;
 }
 
-function handleRequest(request) {
+function handleRequest(request, method) {
   if (request.readyState == 4) {
     var text = "";
     var results = JSON.parse(request.responseText);
     
-    if (!results.hasOwnProperty("devices")) {
+    if ( method === "create" || method === "delete" || method === "update") {
       text += parseDevice(results);
-    }else if (results.hasOwnProperty("devices")) {
+    }else if (method === "query" || method === "search") {
       var num = results.devices.length;
     
       for (var i=0; i<num; i++) {
@@ -356,6 +356,13 @@ function handleRequest(request) {
         text += element;
       }
     }
+    if(method === "create"){
+     console.log(results.uuid); 
+    }
     document.getElementById("results").innerHTML = text;
   }
+}
+
+function createCookie(uuid){
+  
 }
