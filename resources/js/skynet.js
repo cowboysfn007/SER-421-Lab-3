@@ -1,6 +1,7 @@
 var __owner = "robruss";
 var __token = 421;
 var __baseURL = "http://skynet.im/devices";
+var __cookieName = "skynet-ser-421";
 
 function loadForms() {
   newCreate();
@@ -391,12 +392,75 @@ function handleRequest(request, method) {
       }
     }
     if(method === "create"){
-     console.log(results.uuid); 
+        addToCookie(results.uuid);
+    }
+    if(method === "delete"){
+        deleteFromCookie(results.uuid);
     }
     document.getElementById("results").innerHTML = text;
   }
 }
 
+//Cookie Functions
+function addToCookie(uuid){
+    if(checkCookie()){
+        modifyCookie(uuid);   
+    }else{
+        createCookie([uuid]);   
+    }
+}
+
 function createCookie(uuid){
-  
+    var d = new Date();
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    var uuidString = JSON.stringify(uuid);
+    document.cookie = __cookieName + "=" + uuidString + "; " + expires;
+}
+
+function getCookie(){
+    var name = __cookieName + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++){
+        var c = ca[i];
+        while(c.charAt(0) == ' ') c = c.substring(1);
+        if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function checkCookie(){
+    var value = getCookie();
+    if(value != ""){
+        return true;   
+    }
+    else{
+        return false;
+    }
+}
+
+function modifyCookie(uuid){
+    var value = getCookie();
+    var uuidArray = JSON.parse(value);
+    uuidArray.push(uuid);
+    createCookie(uuidArray);
+}
+
+function deleteFromCookie(uuid){
+    if(checkCookie){
+        deleteEntry(uuid);
+    }
+}
+
+function deleteEntry(uuid){
+    var value = getCookie();
+    var uuidArray = JSON.parse(value);
+    for(var i = 0; i < uuidArray.length; i++){
+        console.log(uuidArray[i]);
+        if(uuidArray[i] === uuid){
+            uuidArray.splice(i,1);
+            break;
+        }
+    }
+    createCookie(uuidArray);
 }
