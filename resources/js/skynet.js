@@ -94,6 +94,44 @@ function createForm() {
   return form;
 }
 
+function queryForm() {
+  var form = document.createElement("form");
+  
+  var p = document.createElement("p");
+  p.innerHTML = "Query by UUID"
+  form.appendChild(p);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "UUID: ";
+  form.appendChild(label);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "queryUUID");
+  //input.setAttribute("selectBoxOptions", "Test;Test2");
+  form.appendChild(input);
+  
+  var input = document.createElement("input");
+  input.setAttribute("type", "submit");
+  input.setAttribute("value", "Query");
+  form.appendChild(input);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "<br>Select UUID: ";
+  form.appendChild(label);
+  
+  var select = document.createElement("select");
+  fillCookieUUID(select);
+  select.setAttribute("id", "selectQueryUUID");
+  select.setAttribute("onChange", "javascript:copyToUUID(this, 'queryUUID')");
+  form.appendChild(select);
+  
+  form.setAttribute("action", "javascript:queryDevice()");
+  form.setAttribute("method", "post");
+  
+  return form;
+}
+
 function searchForm() {
   var form = document.createElement("form");
   
@@ -140,44 +178,6 @@ function searchForm() {
   return form;
 }
 
-function queryForm() {
-  var form = document.createElement("form");
-  
-  var p = document.createElement("p");
-  p.innerHTML = "Query by UUID"
-  form.appendChild(p);
-  
-  var label = document.createElement("label");
-  label.innerHTML = "UUID: ";
-  form.appendChild(label);
-  
-  var input = document.createElement("input");
-  input.setAttribute("type", "text");
-  input.setAttribute("id", "uuid");
-  //input.setAttribute("selectBoxOptions", "Test;Test2");
-  form.appendChild(input);
-  
-  var input = document.createElement("input");
-  input.setAttribute("type", "submit");
-  input.setAttribute("value", "Query");
-  form.appendChild(input);
-  
-  var label = document.createElement("label");
-  label.innerHTML = "<br>Select UUID: ";
-  form.appendChild(label);
-  
-  var select = document.createElement("select");
-  fillCookieUUID(select);
-  select.setAttribute("id", "selectUUID");
-  select.setAttribute("onChange", "javascript:copyToUUID()");
-  form.appendChild(select);
-  
-  form.setAttribute("action", "javascript:queryDevice()");
-  form.setAttribute("method", "post");
-  
-  return form;
-}
-
 function deleteForm() {
   var form = document.createElement("form");
   
@@ -191,13 +191,23 @@ function deleteForm() {
   
   var input = document.createElement("input");
   input.setAttribute("type", "text");
-  input.setAttribute("id", "deleteUuid");
+  input.setAttribute("id", "deleteUUID");
   form.appendChild(input);
   
   var input = document.createElement("input");
   input.setAttribute("type", "submit");
   input.setAttribute("value", "Delete");
   form.appendChild(input);
+  
+  var label = document.createElement("label");
+  label.innerHTML = "<br>Select UUID: ";
+  form.appendChild(label);
+  
+  var select = document.createElement("select");
+  fillCookieUUID(select);
+  select.setAttribute("id", "selectDeleteUUID");
+  select.setAttribute("onChange", "javascript:copyToUUID(this, 'deleteUUID')");
+  form.appendChild(select);
   
   form.setAttribute("action", "javascript:deleteDevice()");
   form.setAttribute("method", "post");
@@ -218,7 +228,7 @@ function updateForm(){
   
   var input = document.createElement("input");
   input.setAttribute("type", "text");
-  input.setAttribute("id", "updateUuid");
+  input.setAttribute("id", "updateUUID");
   form.appendChild(input);
   
   var input = document.createElement("input");
@@ -252,6 +262,20 @@ function createDevice() {
   request.send(payload);
     
   newCreate();
+}
+
+function queryDevice(){
+  console.log("Query");
+  var uuid = document.getElementById("queryUUID").value;
+  var request = getRequestObject();
+  request.onreadystatechange = function() {handleRequest(request)};
+  request.open("GET", __baseURL + "/" + uuid, true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.setRequestHeader("skynet_auth_uuid", __owner);
+  request.setRequestHeader("skynet_auth_token", __token);
+  request.send(null);
+    
+  newQuery();
 }
 
 function searchDevice() {
@@ -293,7 +317,7 @@ function queryDevice(){
 
 function deleteDevice() {
   console.log("Delete");
-  var uuid = document.getElementById("deleteUuid").value;
+  var uuid = document.getElementById("deleteUUID").value;
   var request = getRequestObject();
   request.onreadystatechange = function() {handleRequest(request, "delete")};
   request.open("DELETE", __baseURL + "/" + uuid, true);
@@ -307,7 +331,7 @@ function deleteDevice() {
 
 function updateDevice(){
   console.log("Update");
-  var uuid = document.getElementById("updateUuid").value;
+  var uuid = document.getElementById("updateUUID").value;
   var request = getRequestObject();
   navigator.geolocation.getCurrentPosition(function(position) {
     var lat = position.coords.latitude; 
@@ -335,10 +359,9 @@ function parseDevice(device) {
   return text;
 }
 
-function copyToUUID() {
-  var select = document.getElementById("selectUUID");
+function copyToUUID(select, uuidLocation) {
   var value = select.options[select.selectedIndex].value;
-  document.getElementById("uuid").value = value;
+  document.getElementById(uuidLocation).value = value;
 }
 
 function fillCookieUUID(select) {
