@@ -1,61 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Skynet Project</title>
-        <meta charset="=utf-8">
-        <link rel="stylesheet" href="resources/css/jquery-ui.css">
-        <script src="resources/js/jquery.js"></script>
-        <script src="resources/js/jquery-ui.js"></script>
-        <script src="resources/js/skynet.js"></script>
-        <script>
-            $(function() {
-                $( "#tabs" ).tabs();
-            });
-        </script>
-    </head>
-    
-    <body onload="loadForms()">
-        <div id="tabs">
-            <ul>
-                <li><a href="#tabs-1">Create</a></li>
-                <li><a href="#tabs-2">Query</a></li>
-                <li><a href="#tabs-3">Search</a></li>
-                <li><a href="#tabs-4">Delete</a></li>
-                <li><a href="#tabs-5">Update Location</a></li>
-            </ul>
-            <div id="tabs-1">
-                <p>Create Your Initial Device</p>
-                
-              <!--
-              <form action="javascript:createDevice()" method="post">
-                    UUID: <input type="text" id="owner" value="robruss"><br>
-                    Token: <input type="text" id="token" value="421"><br>
-                    <div id="dynamicField">
-                        Key/Value Pair: 
-                      <input type="text" name="keyInputs[]">=<input type="text"
-                                                                    name="valueInputs[]">
-                    </div>
-                    <input type="button" value="Add Additional Pair"
-                           onClick="addField('dynamicField');">
-                    <input type="submit" value="Submit">
-                </form>
-              -->
-              
-            </div>
-            <div id="tabs-2">
-                <p>Query for Device</p>
-            </div>
-            <div id="tabs-3">
-                <p>Search for devices</p>
-            </div>
-            <div id="tabs-4">
-                <p>Delete a Device</p>
-            </div>
-            <div id="tabs-5">
-                <p>Update Geo Location</p>
-            </div>
-          <div id="results"></div>
-        </div>
-        
-    </body>
+  <head>
+    <title>Skynet Project</title>
+    <meta charset="=utf-8">
+    <link rel="stylesheet" href="resources/css/jquery-ui.css">
+    <script src="resources/js/jquery.js"></script>
+    <script src="resources/js/jquery-ui.js"></script>
+    <script src="resources/js/skynet.js"></script>
+    <script>
+      $(function() {
+        $( "#tabs" ).tabs();
+      });
+    </script>
+  </head>
+  <body onload="loadForms()">
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">Create</a></li>
+        <li><a href="#tabs-2">Query</a></li>
+        <li><a href="#tabs-3">Search</a></li>
+        <li><a href="#tabs-4">Delete</a></li>
+        <li><a href="#tabs-5">Update Location</a></li>
+      </ul>
+      <div id="tabs-1"></div>
+      <div id="tabs-2"></div>
+      <div id="tabs-3"></div>
+      <div id="tabs-4"></div>
+      <div id="tabs-5"></div>
+      <div id="resultsField">
+        Results from Skynet:
+        <div id="results">None</div>
+      </div>
+    </div>
+  </body>
 </html>
