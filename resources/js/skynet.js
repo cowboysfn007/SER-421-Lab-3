@@ -1,3 +1,11 @@
+/*
+ *  Rob Miller
+ *  Russ Parmer
+ *  SER421
+ *  Lab 3 - EC
+ *  10/15/14
+ */
+
 var __owner = "robruss";
 var __token = 421;
 var __baseURL = "http://skynet.im/devices";
@@ -398,7 +406,7 @@ function handleRequest(request, method) {
     var results = JSON.parse(request.responseText);
     
     if ( method === "create" || method === "delete" || method === "update") {
-      text += parseDevice(results);
+      text += "<br>" + parseDevice(results);
     }else if (method === "query" || method === "search") {
       var num = results.devices.length;
       for (var i=0; i<num; i++) {
