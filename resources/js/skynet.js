@@ -412,15 +412,15 @@ function handleRequest(request, method) {
       }
     }
     if(method === "create"){
-        addToCookie(__cookieName, results.uuid);
+      addToCookie(__cookieName, results.uuid);
     }
     else if(method === "delete"){
-        deleteFromCookie(__cookieName, results.uuid);
+      deleteFromCookie(__cookieName, results.uuid);
     }
     else if(method === "update"){
-        var pinInfo = {uuid:results.uuid, lat:results.lat, long:results.long, timestamp:results.timestamp}; 
-        addToCookie(__pinCookie, JSON.stringify(pinInfo));
-        updateMap();
+      var pinInfo = {uuid:results.uuid, lat:results.lat, long:results.long, timestamp:results.timestamp}; 
+      addToCookie(__pinCookie, JSON.stringify(pinInfo));
+      updateMap();
         
         /*
          var myLatLong = new google.maps.LatLng(results.lat,results.long);
@@ -434,95 +434,95 @@ function handleRequest(request, method) {
       
     document.getElementById("results").innerHTML = text;
     loadForms();
+    //updateMap();
   }
 }
 
 //Cookie Functions
 function addToCookie(cname, cvalue){
-    if(checkCookie(cname)){
-        modifyCookie(cname, cvalue);   
-    }else{
-        createCookie(cname, JSON.stringify([cvalue]));   
-    }
+  if(checkCookie(cname)){
+    modifyCookie(cname, cvalue);   
+  }else{
+    createCookie(cname, JSON.stringify([cvalue]));   
+  }
 }
 
 function createCookie(cname, cvalue){
-    var d = new Date();
-    d.setTime(d.getTime() + (365*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+  var d = new Date();
+  d.setTime(d.getTime() + (365*24*60*60*1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 
 function getCookie(cname){
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++){
-        var c = ca[i];
-        while(c.charAt(0) == ' ') c = c.substring(1);
-        if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
-    }
-    return "";
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++){
+    var c = ca[i];
+    while(c.charAt(0) == ' ') c = c.substring(1);
+    if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
+  }
+  return "";
 }
 
 function checkCookie(cname){
-    var value = getCookie(cname);
-    if(value != ""){
-        return true;   
-    }
-    else{
-        return false;
-    }
+  var value = getCookie(cname);
+  if(value != ""){
+    return true;   
+  }
+  else{
+    return false;
+  }
 }
 
 function modifyCookie(cname, cvalue){
-    var value = getCookie(cname);
-    var valueArray = JSON.parse(value);
-    valueArray.push(cvalue);
-    value = JSON.stringify(valueArray)
-    createCookie(cname, value);
+  var value = getCookie(cname);
+  var valueArray = JSON.parse(value);
+  valueArray.push(cvalue);
+  value = JSON.stringify(valueArray)
+  createCookie(cname, value);
 }
 
 function deleteFromCookie(cname, cvalue){
-    if(checkCookie(cname)){
-        deleteEntry(cname, cvalue);
-    }
+  if(checkCookie(cname)){
+    deleteEntry(cname, cvalue);
+  }
 }
 
 function deleteEntry(cname, cvalue){
-    var value = getCookie(cname);
-    var valueArray = JSON.parse(value);
-    for(var i = 0; i < valueArray.length; i++){
-        console.log(valueArray[i]);
-        if(valueArray[i] === cvalue){
-            valueArray.splice(i,1);
-            break;
-        }
+  var value = getCookie(cname);
+  var valueArray = JSON.parse(value);
+  for(var i = 0; i < valueArray.length; i++){
+    console.log(valueArray[i]);
+    if(valueArray[i] === cvalue){
+      valueArray.splice(i,1);
+      break;
     }
-    createCookie(cname, JSON.stringify(valueArray));
+  }
+  createCookie(cname, JSON.stringify(valueArray));
 }
 
 //Google Maps
 function initialize(){
-    var mapOptions = {
-        zoom: 10,
-        center: new google.maps.LatLng(33.2952149,-111.7639625)
-    };
-    __map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-    updateMap();
+  var mapOptions = {
+    zoom: 10,
+    center: new google.maps.LatLng(33.2952149,-111.7639625)
+  };
+  __map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  updateMap();
 }
 
 function updateMap(){
-    var pins = JSON.parse(getCookie(__pinCookie));
-    for(var i = 0; i < pins.length; i++){
-        var pin = JSON.parse(pins[i]);
-        console.log("UUID: " + pin.uuid + " LAT: " + pin.lat);
-         var myLatLong = new google.maps.LatLng(pin.lat,pin.long);
-         var marker = new google.maps.Marker({
-            position: myLatLong,
-             map: __map,
-             title: pin.uuid + " @ " + pin.timestamp
-         });
-    }
-    
+  var pins = JSON.parse(getCookie(__pinCookie));
+  for(var i = 0; i < pins.length; i++){
+    var pin = JSON.parse(pins[i]);
+    console.log("UUID: " + pin.uuid + " LAT: " + pin.lat);
+    var myLatLong = new google.maps.LatLng(pin.lat,pin.long);
+    var marker = new google.maps.Marker({
+      position: myLatLong,
+      map: __map,
+      title: pin.uuid + " @ " + pin.timestamp
+    });
+  }
 }
 
