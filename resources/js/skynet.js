@@ -44,7 +44,7 @@ function createForm() {
   var form = document.createElement("form");
   
   var p = document.createElement("p");
-  p.innerHTML = "Create Pseudo Devices"
+  p.innerHTML = "Create Pseudo Devices";
   form.appendChild(p);
   
   var label = document.createElement("label");
@@ -101,7 +101,7 @@ function queryForm() {
   var form = document.createElement("form");
   
   var p = document.createElement("p");
-  p.innerHTML = "Query by UUID"
+  p.innerHTML = "Query by UUID";
   form.appendChild(p);
   
   var label = document.createElement("label");
@@ -184,7 +184,7 @@ function deleteForm() {
   var form = document.createElement("form");
   
   var p = document.createElement("p");
-  p.innerHTML = "Delete by UUID"
+  p.innerHTML = "Delete by UUID";
   form.appendChild(p);
   
   var label = document.createElement("label");
@@ -363,18 +363,21 @@ function copyToUUID(select, uuidLocation) {
 }
 
 function fillCookieUUID(select) {
-  var uuids = JSON.parse(getCookie(__cookieName));
   var option = document.createElement("option");
   option.disabled = true;
   option.selected = true;
   option.textContent = "Select One";
   select.appendChild(option);
   
-  for (var i=0; i < uuids.length; i++) {
-    option = document.createElement("option");
-    option.textContent = uuids[i];
-    option.value = uuids[i];
-    select.appendChild(option);
+  var cookie = getCookie(__cookieName);
+  if (cookie != "") {
+    var uuids = JSON.parse(getCookie(__cookieName));
+    for (var i=0; i < uuids.length; i++) {
+      option = document.createElement("option");
+      option.textContent = uuids[i];
+      option.value = uuids[i];
+      select.appendChild(option);
+    }
   }
 }
 
@@ -398,15 +401,14 @@ function handleRequest(request, method) {
       text += parseDevice(results);
     }else if (method === "query" || method === "search") {
       var num = results.devices.length;
-    
       for (var i=0; i<num; i++) {
         var device = results.devices[i];
         var name = "Device - " + device.uuid;
-      
+
         var element = parseDevice(device);
         console.log(name);
         console.log(element);
-        
+
         text += "<br>" + name + "<br>";
         text += element;
       }
