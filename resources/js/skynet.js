@@ -420,7 +420,7 @@ function handleRequest(request, method) {
     else if(method === "update"){
       var pinInfo = {uuid:results.uuid, lat:results.lat, long:results.long, timestamp:results.timestamp}; 
       addToCookie(__pinCookie, JSON.stringify(pinInfo));
-      updateMap();
+      //updateMap();
         
         /*
          var myLatLong = new google.maps.LatLng(results.lat,results.long);
@@ -434,7 +434,6 @@ function handleRequest(request, method) {
       
     document.getElementById("results").innerHTML = text;
     loadForms();
-    //updateMap();
   }
 }
 
