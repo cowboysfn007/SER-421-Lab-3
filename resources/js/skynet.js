@@ -2,6 +2,7 @@ var __owner = "robruss";
 var __token = 421;
 var __baseURL = "http://skynet.im/devices";
 var __cookieName = "skynet-ser-421";
+var __pinCookie = "pin-locations";
 var __map;
 
 function loadForms() {
@@ -417,17 +418,18 @@ function handleRequest(request, method) {
       }
     }
     if(method === "create"){
-        addToCookie(results.uuid);
+        addToCookie(__cookieName, results.uuid);
     }
     else if(method === "delete"){
-        deleteFromCookie(results.uuid);
+        deleteFromCookie(__cookieName, results.uuid);
     }
     else if(method === "update"){
+         addMarkerToCookie(results);
          var myLatLong = new google.maps.LatLng(results.lat,results.long);
          var marker = new google.maps.Marker({
             position: myLatLong,
              map: __map,
-             title: results.uuid
+             title: results.uuid + " @ " + results.timestamp
          });
     }
       
@@ -436,24 +438,23 @@ function handleRequest(request, method) {
 }
 
 //Cookie Functions
-function addToCookie(uuid){
-    if(checkCookie()){
-        modifyCookie(uuid);   
+function addToCookie(cname, cvalue){
+    if(checkCookie(cname)){
+        modifyCookie(cname, cvalue);   
     }else{
-        createCookie([uuid]);   
+        createCookie(cname, JSON.stringify([cvalue]));   
     }
 }
 
-function createCookie(uuid){
+function createCookie(cname, cvalue){
     var d = new Date();
     d.setTime(d.getTime() + (365*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
-    var uuidString = JSON.stringify(uuid);
-    document.cookie = __cookieName + "=" + uuidString + "; " + expires;
+    document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 
-function getCookie(){
-    var name = __cookieName + "=";
+function getCookie(cname){
+    var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++){
         var c = ca[i];
@@ -463,8 +464,8 @@ function getCookie(){
     return "";
 }
 
-function checkCookie(){
-    var value = getCookie();
+function checkCookie(cname){
+    var value = getCookie(cname);
     if(value != ""){
         return true;   
     }
@@ -473,30 +474,31 @@ function checkCookie(){
     }
 }
 
-function modifyCookie(uuid){
-    var value = getCookie();
-    var uuidArray = JSON.parse(value);
-    uuidArray.push(uuid);
-    createCookie(uuidArray);
+function modifyCookie(cname, cvalue){
+    var value = getCookie(cname);
+    var valueArray = JSON.parse(value);
+    valueArray.push(cvalue);
+    value = JSON.stringify(valueArray)
+    createCookie(cname, value);
 }
 
-function deleteFromCookie(uuid){
-    if(checkCookie){
-        deleteEntry(uuid);
+function deleteFromCookie(cname, cvalue){
+    if(checkCookie(cname)){
+        deleteEntry(cname, cvalue);
     }
 }
 
-function deleteEntry(uuid){
-    var value = getCookie();
-    var uuidArray = JSON.parse(value);
-    for(var i = 0; i < uuidArray.length; i++){
-        console.log(uuidArray[i]);
-        if(uuidArray[i] === uuid){
-            uuidArray.splice(i,1);
+function deleteEntry(cname, cvalue){
+    var value = getCookie(cname);
+    var valueArray = JSON.parse(value);
+    for(var i = 0; i < valueArray.length; i++){
+        console.log(valueArray[i]);
+        if(valueArray[i] === cvalue){
+            valueArray.splice(i,1);
             break;
         }
     }
-    createCookie(uuidArray);
+    createCookie(cname, JSON.stringify(valueArray));
 }
 
 //Google Maps
@@ -506,4 +508,21 @@ function initialize(){
         center: new google.maps.LatLng(33.2952149,-111.7639625)
     };
     __map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+}
+
+function addMarkerToCookie(results){
+    if(getAllMarkers() != ""){
+        var markers = getAllMarkers();
+    }
+}
+
+function getAllMarkers(){
+    var name = __pinCookie + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++){
+        var c = ca[i];
+        while(c.charAt(0) == ' ') c = c.substring(1);
+        if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
+    }
+    return "";
 }
