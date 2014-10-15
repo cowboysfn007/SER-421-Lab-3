@@ -111,7 +111,6 @@ function queryForm() {
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("id", "queryUUID");
-  //input.setAttribute("selectBoxOptions", "Test;Test2");
   form.appendChild(input);
   
   var input = document.createElement("input");
@@ -239,6 +238,16 @@ function updateForm(){
   input.setAttribute("value", "Update");
   form.appendChild(input);
   
+  var label = document.createElement("label");
+  label.innerHTML = "<br>Select UUID: ";
+  form.appendChild(label);
+  
+  var select = document.createElement("select");
+  fillCookieUUID(select);
+  select.setAttribute("id", "selectUpdateUUID");
+  select.setAttribute("onChange", "javascript:copyToUUID(this, 'updateUUID')");
+  form.appendChild(select);
+  
   form.setAttribute("action", "javascript:updateDevice()");
   form.setAttribute("method", "post");
                            
@@ -271,7 +280,7 @@ function queryDevice(){
   console.log("Query");
   var uuid = document.getElementById("queryUUID").value;
   var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request)};
+  request.onreadystatechange = function() {handleRequest(request, "query")};
   request.open("GET", __baseURL + "/" + uuid, true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   request.setRequestHeader("skynet_auth_uuid", __owner);
@@ -302,20 +311,6 @@ function searchDevice() {
   request.send(null);
   
   newSearch();
-}
-
-function queryDevice(){
-  console.log("Query");
-  var uuid = document.getElementById("uuid").value;
-  var request = getRequestObject();
-  request.onreadystatechange = function() {handleRequest(request, "query")};
-  request.open("GET", __baseURL + "/" + uuid, true);
-  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  request.setRequestHeader("skynet_auth_uuid", __owner);
-  request.setRequestHeader("skynet_auth_token", __token);
-  request.send(null);
-    
-  newQuery();
 }
 
 function deleteDevice() {
@@ -368,18 +363,17 @@ function copyToUUID(select, uuidLocation) {
 }
 
 function fillCookieUUID(select) {
-  var sample = ["sample1", "sample2", "sample3"];
-  
+  var uuids = JSON.parse(getCookie(__cookieName));
   var option = document.createElement("option");
   option.disabled = true;
   option.selected = true;
   option.textContent = "Select One";
   select.appendChild(option);
   
-  for (var i=0; i < sample.length; i++) {
+  for (var i=0; i < uuids.length; i++) {
     option = document.createElement("option");
-    option.textContent = sample[i];
-    option.value = sample[i];
+    option.textContent = uuids[i];
+    option.value = uuids[i];
     select.appendChild(option);
   }
 }
@@ -434,6 +428,7 @@ function handleRequest(request, method) {
     }
       
     document.getElementById("results").innerHTML = text;
+    loadForms();
   }
 }
 
