@@ -416,20 +416,11 @@ function handleRequest(request, method) {
     }
     else if(method === "delete"){
       deleteFromCookie(__cookieName, results.uuid);
+      deleteFromCookie(__pinCookie, results.uuid);
     }
     else if(method === "update"){
       var pinInfo = {uuid:results.uuid, lat:results.lat, long:results.long, timestamp:results.timestamp}; 
       addToCookie(__pinCookie, JSON.stringify(pinInfo));
-      //updateMap();
-        
-        /*
-         var myLatLong = new google.maps.LatLng(results.lat,results.long);
-         var marker = new google.maps.Marker({
-            position: myLatLong,
-             map: __map,
-             title: results.uuid + " @ " + results.timestamp
-         });
-         */
     }
       
     document.getElementById("results").innerHTML = text;
@@ -491,9 +482,16 @@ function deleteFromCookie(cname, cvalue){
 function deleteEntry(cname, cvalue){
   var value = getCookie(cname);
   var valueArray = JSON.parse(value);
+  
   for(var i = 0; i < valueArray.length; i++){
-    console.log(valueArray[i]);
-    if(valueArray[i] === cvalue){
+    var uuid;
+    if (cname == __pinCookie) {
+      var temp = JSON.parse(valueArray[i]);
+      uuid = temp.uuid;
+    }else if (cname === __cookieName) {
+      uuid = valueArray[i];
+    }
+    if(uuid === cvalue){
       valueArray.splice(i,1);
       break;
     }
@@ -524,4 +522,3 @@ function updateMap(){
     });
   }
 }
-
