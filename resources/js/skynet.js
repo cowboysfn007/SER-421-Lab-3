@@ -424,13 +424,18 @@ function handleRequest(request, method) {
         deleteFromCookie(__cookieName, results.uuid);
     }
     else if(method === "update"){
-         addMarkerToCookie(results);
+        var pinInfo = {uuid:results.uuid, lat:results.lat, long:results.long, timestamp:results.timestamp}; 
+        addToCookie(__pinCookie, JSON.stringify(pinInfo));
+        updateMap();
+        
+        /*
          var myLatLong = new google.maps.LatLng(results.lat,results.long);
          var marker = new google.maps.Marker({
             position: myLatLong,
              map: __map,
              title: results.uuid + " @ " + results.timestamp
          });
+         */
     }
       
     document.getElementById("results").innerHTML = text;
@@ -508,21 +513,21 @@ function initialize(){
         center: new google.maps.LatLng(33.2952149,-111.7639625)
     };
     __map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    updateMap();
 }
 
-function addMarkerToCookie(results){
-    if(getAllMarkers() != ""){
-        var markers = getAllMarkers();
+function updateMap(){
+    var pins = JSON.parse(getCookie(__pinCookie));
+    for(var i = 0; i < pins.length; i++){
+        var pin = JSON.parse(pins[i]);
+        console.log("UUID: " + pin.uuid + " LAT: " + pin.lat);
+         var myLatLong = new google.maps.LatLng(pin.lat,pin.long);
+         var marker = new google.maps.Marker({
+            position: myLatLong,
+             map: __map,
+             title: pin.uuid + " @ " + pin.timestamp
+         });
     }
+    
 }
 
-function getAllMarkers(){
-    var name = __pinCookie + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++){
-        var c = ca[i];
-        while(c.charAt(0) == ' ') c = c.substring(1);
-        if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
-    }
-    return "";
-}
